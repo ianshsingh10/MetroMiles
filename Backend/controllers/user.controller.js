@@ -56,3 +56,49 @@ module.exports.registerUser = async (req, res) => {
         return res.status(500).json({ message: "Internal server error" });
     }
 };
+
+module.exports.loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if(!email || !password) {
+        throw new Error("All fields are required");
+    }
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    };
+
+    // Find user by email
+    const user = await userModel.findOne({ email: email.toLowerCase() }).select("+password");
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    // Compare password
+    const isMatch = await user.comparePassword(password);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    // Generate auth token
+    const token = user.generateAuthToken();
+
+    return res.status(200).json({
+      message: "Login successful",
+      user: {
+        id: user._id,
+        fullname: user.fullName,
+        email: user.email,
+      },
+      token,
+    });
+  } catch (error) {
+    console.error("Error logging in user:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};

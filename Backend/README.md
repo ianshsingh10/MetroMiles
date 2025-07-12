@@ -68,3 +68,69 @@ Content-Type: application/json
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
+
+---
+
+## User Login Endpoint
+
+`/users/login`
+
+## HTTP Method
+`POST`
+
+## Description
+
+Authenticates a user in the MetroMiles system. Requires email and password. Returns a JWT token upon successful login.
+
+## Request Body
+
+Send a JSON object with the following structure:
+
+```json
+{
+  "email": "john@example.com",
+  "password": "yourpassword"
+}
+```
+
+### Field Requirements
+
+- `email` (string, required): Must be a valid email address.
+- `password` (string, required): User's password.
+
+## Responses
+
+| Status Code | Description                                 | Response Example                                      |
+|-------------|---------------------------------------------|-------------------------------------------------------|
+| 200         | Login successful                            | `{ "message": "Login successful", "user": { "id": "...", "fullname": { "firstName": "...", "lastName": "..." }, "email": "..." }, "token": "..." }` |
+| 400         | Validation error or invalid credentials     | `{ "errors": [ ... ] }` or `{ "message": "Invalid email or password" }` |
+| 500         | Internal server error                       | `{ "message": "Internal server error" }`              |
+
+## Example Request
+
+```http
+POST /users/login
+Content-Type: application/json
+
+{
+  "email": "jane.smith@example.com",
+  "password": "securePass123"
+}
+```
+
+## Example Success Response
+
+```json
+{
+  "message": "Login successful",
+  "user": {
+    "id": "60f7c2b8e1d2c8a1b8e4d123",
+    "fullname": {
+      "firstName": "Jane",
+      "lastName": "Smith"
+    },
+    "email": "jane.smith@example.com"
+  },
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
