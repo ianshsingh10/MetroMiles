@@ -1,0 +1,70 @@
+#  Backend API Documentation
+
+## User Registration Endpoint
+
+`/users/register`
+
+## HTTP Method
+`POST`
+## Description
+
+Registers a new user in the MetroMiles system. Requires user details including first name, email, and password. Returns a JWT token upon successful registration.
+
+## Request Body
+
+Send a JSON object with the following structure:
+
+```json
+{
+  "firstName": "John",
+  "lastName": "Doe",         // Optional
+  "email": "john@example.com",
+  "password": "yourpassword"
+}
+```
+
+### Field Requirements
+
+- `firstName` (string, required): User's first name.
+- `lastName` (string, optional): User's last name.
+- `email` (string, required): Must be a valid email address.
+- `password` (string, required): Minimum 6 characters.
+
+## Responses
+
+| Status Code | Description                                 | Response Example                                      |
+|-------------|---------------------------------------------|-------------------------------------------------------|
+| 200         | User registered successfully                | `{ "message": "User registered successfully", "user": { "id": "...", "fullname": { "firstName": "...", "lastName": "..." }, "email": "..." }, "token": "..." }` |
+| 400         | Validation error or user already exists     | `{ "errors": [ ... ] }` or `{ "message": "User already exists" }` |
+| 500         | Internal server error                       | `{ "message": "Internal server error" }`              |
+
+## Example Request
+
+```http
+POST /users/register
+Content-Type: application/json
+
+{
+  "firstName": "Jane",
+  "lastName": "Smith",
+  "email": "jane.smith@example.com",
+  "password": "securePass123"
+}
+```
+
+## Example Success Response
+
+```json
+{
+  "message": "User registered successfully",
+  "user": {
+    "id": "60f7c2b8e1d2c8a1b8e4d123",
+    "fullname": {
+      "firstName": "Jane",
+      "lastName": "Smith"
+    },
+    "email": "jane.smith@example.com"
+  },
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
