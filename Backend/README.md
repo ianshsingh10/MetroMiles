@@ -134,3 +134,88 @@ Content-Type: application/json
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
+
+---
+
+## User Profile Endpoint
+
+`/users/profile`
+
+## HTTP Method
+`GET`
+
+## Description
+
+Returns the authenticated user's profile information. Requires a valid JWT token.
+
+## Authentication
+
+Send the JWT token in the `Authorization` header as `Bearer <token>` or as a cookie named `token`.
+
+## Responses
+
+| Status Code | Description                | Response Example                                      |
+|-------------|----------------------------|-------------------------------------------------------|
+| 200         | Profile fetched successfully | `{ "id": "...", "fullname": { "firstName": "...", "lastName": "..." }, "email": "..." }` |
+| 401         | Unauthorized               | `{ "message": "Authentication required" }`            |
+| 500         | Internal server error       | `{ "message": "Internal server error" }`              |
+
+## Example Request
+
+```http
+GET /users/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+## Example Success Response
+
+```json
+{
+  "id": "60f7c2b8e1d2c8a1b8e4d123",
+  "fullname": {
+    "firstName": "Jane",
+    "lastName": "Smith"
+  },
+  "email": "jane.smith@example.com"
+}
+```
+
+---
+
+## User Logout Endpoint
+
+`/users/logout`
+
+## HTTP Method
+`GET`
+
+## Description
+
+Logs out the authenticated user by blacklisting the JWT token and clearing the authentication cookie.
+
+## Authentication
+
+Send the JWT token in the `Authorization` header as `Bearer <token>` or as a cookie named `token`.
+
+## Responses
+
+| Status Code | Description                | Response Example                                      |
+|-------------|----------------------------|-------------------------------------------------------|
+| 200         | Logout successful          | `{ "message": "Logout successful" }`                  |
+| 401         | Authentication token missing| `{ "message": "Authentication token is missing" }`    |
+| 500         | Internal server error       | `{ "message": "Internal server error" }`              |
+
+## Example Request
+
+```http
+GET /users/logout
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+## Example Success Response
+
+```json
+{
+  "message": "Logout successful"
+}
+```

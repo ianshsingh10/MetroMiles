@@ -1,5 +1,6 @@
 const userModel = require("../models/user.model");
 const { validationResult } = require("express-validator");
+const blacklistTokenModel = require("../models/blacklistToken.model");
 
 module.exports.registerUser = async (req, res) => {
   try {
@@ -87,6 +88,7 @@ module.exports.loginUser = async (req, res) => {
 
     // Generate auth token
     const token = user.generateAuthToken();
+    res.cookie("token", token);
 
     return res.status(200).json({
       message: "Login successful",
@@ -102,3 +104,28 @@ module.exports.loginUser = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+module.exports.getUserProfile = async (req, res) => {
+    res.status(200).json(req.user);
+};
+
+module.exports.logoutUser = async (req, res) => {
+  try {
+    const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
+
+    if (!token) {
+      return res.status(401).json({ message: "Authentication token is missing" });
+    }
+
+    // Add token to blacklist
+    await blacklistTokenModel.create({ token });
+
+    // Clear the cookie
+    res.clearCookie("token");
+
+    return res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    console.error("Error logging out user:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
