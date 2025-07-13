@@ -219,3 +219,101 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
   "message": "Logout successful"
 }
 ```
+
+---
+
+## Captain Registration Endpoint
+
+`/captains/register`
+
+## HTTP Method
+`POST`
+
+## Description
+
+Registers a new captain in the MetroMiles system. Requires captain details including full name, email, password, and vehicle information. Returns a JWT token upon successful registration.
+
+## Request Body
+
+Send a JSON object with the following structure:
+
+```json
+{
+  "fullName": {
+    "firstName": "John",
+    "lastName": "Doe"
+  },
+  "email": "john@example.com",
+  "password": "yourpassword",
+  "vehicle": {
+    "color": "Red",
+    "plate": "ABC123",
+    "capacity": 4,
+    "type": "Sedan"
+  }
+}
+```
+
+### Field Requirements
+
+- `fullName.firstName` (string, required): Captain's first name.
+- `fullName.lastName` (string, optional): Captain's last name.
+- `email` (string, required): Must be a valid email address.
+- `password` (string, required): Minimum 6 characters.
+- `vehicle.color` (string, required): Vehicle color.
+- `vehicle.plate` (string, required): Vehicle plate.
+- `vehicle.capacity` (number, required): Vehicle capacity.
+- `vehicle.type` (string, required): Vehicle type.
+
+## Responses
+
+| Status Code | Description                                 | Response Example                                      |
+|-------------|---------------------------------------------|-------------------------------------------------------|
+| 200         | Captain registered successfully             | `{ "message": "Captain registered successfully", "captain": { "id": "...", "fullname": { "firstName": "...", "lastName": "..." }, "email": "...", "vehicle": { ... } }, "token": "..." }` |
+| 400         | Validation error or captain already exists  | `{ "errors": [ ... ] }` or `{ "message": "Captain already exists" }` |
+| 500         | Internal server error                       | `{ "message": "Internal server error" }`              |
+
+## Example Request
+
+```http
+POST /captains/register
+Content-Type: application/json
+
+{
+  "fullName": {
+    "firstName": "Jane",
+    "lastName": "Smith"
+  },
+  "email": "jane.smith@example.com",
+  "password": "securePass123",
+  "vehicle": {
+    "color": "Blue",
+    "plate": "XYZ789",
+    "capacity": 6,
+    "type": "SUV"
+  }
+}
+```
+
+## Example Success Response
+
+```json
+{
+  "message": "Captain registered successfully",
+  "captain": {
+    "id": "60f7c2b8e1d2c8a1b8e4d456",
+    "fullname": {
+      "firstName": "Jane",
+      "lastName": "Smith"
+    },
+    "email": "jane.smith@example.com",
+    "vehicle": {
+      "color": "Blue",
+      "plate": "XYZ789",
+      "capacity": 6,
+      "type": "SUV"
+    }
+  },
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
